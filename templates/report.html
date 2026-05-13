@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+
+    <!-- Header -->
+    <div class="col-12 text-center mb-3">
+        <h3 class="fw-bold">
+            <i class="fa-solid fa-microscope text-eco me-2"></i>Detailed Report
+        </h3>
+        <p class="text-muted small">Prediction insights</p>
+    </div>
+
+    <!-- Main Card -->
+    <div class="col-lg-8">
+        <div class="card shadow border-0 rounded-4 overflow-hidden">
+            <div class="row g-0">
+                
+                <!-- Image -->
+                <div class="col-md-5 bg-dark">
+                    <img src="{{ url_for('static', filename='uploads/' + item.image) }}"
+                         class="img-fluid w-100 h-100 object-fit-cover"
+                         style="max-height: 300px;">
+                </div>
+
+                <!-- Details -->
+                <div class="col-md-7">
+                    <div class="card-body p-4">
+
+                        <!-- Class + Type -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted text-uppercase">Class</small>
+                                <h4 class="fw-bold text-capitalize mb-0">{{ item.class }}</h4>
+                            </div>
+
+                            <span class="badge {{ 'bg-success' if item.type == 'Biodegradable' else 'bg-danger' }}">
+                                {{ item.type }}
+                            </span>
+                        </div>
+
+                        <!-- Confidence -->
+                        <div class="mb-3">
+                            <small class="text-muted">Confidence</small>
+                            <div class="d-flex align-items-center">
+                                <strong class="me-2">{{ item.confidence }}%</strong>
+                                <div class="progress flex-grow-1" style="height:6px;">
+                                    <div class="progress-bar bg-eco"
+                                         style="width: {{ item.confidence }}%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart -->
+                        <div class="mb-3">
+                            <canvas id="pieChart" style="max-height:150px;"></canvas>
+                        </div>
+
+                        <!-- Time -->
+                        <div class="mb-3">
+                            <small class="text-muted">Time</small>
+                            <div class="fw-semibold">{{ item.time }}</div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                Back
+                            </a>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-eco rounded-pill">
+                                Dashboard
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+new Chart(document.getElementById("pieChart"), {
+    type: "doughnut",
+    data: {
+        labels: {{ pie_labels | tojson }},
+        datasets: [{
+            data: {{ pie_data | tojson }},
+            backgroundColor: ['#0d6efd', '#e9ecef']
+        }]
+    },
+    options: {
+        cutout: '75%',
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+</script>
+{% endblock %}

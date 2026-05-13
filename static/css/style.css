@@ -1,0 +1,97 @@
+/* Global Theme Settings */
+:root {
+    --eco-green: #2ecc71;
+    --eco-dark: #27ae60;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: #343a40;
+    letter-spacing: -0.01em;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+}
+
+/* Custom Utilities */
+.bg-eco {
+    background-color: var(--eco-green) !important;
+}
+
+.text-eco {
+    color: var(--eco-dark) !important;
+}
+
+.btn-eco {
+    background-color: var(--eco-green);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-eco:hover {
+    background-color: var(--eco-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+}
+
+.btn-outline-eco {
+    color: var(--eco-green);
+    border-color: var(--eco-green);
+}
+
+.btn-outline-eco:hover {
+    background-color: var(--eco-green);
+    color: white;
+}
+
+/* Card Styling */
+.card {
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Drag and Drop Zone */
+.drop-zone {
+    border: 2px dashed #dee2e6;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.drop-zone.dragover {
+    border-color: var(--eco-green);
+    background-color: rgba(46, 204, 113, 0.05);
+    transform: scale(1.02);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.tracking-wide {
+    letter-spacing: 0.1em;
+}
+
+/* Navbar Tuning */
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: -0.03em;
+}

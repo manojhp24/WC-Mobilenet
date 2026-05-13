@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold mb-0"><i class="fa-solid fa-chart-pie text-eco me-2"></i>Analytics Dashboard</h2>
+        <p class="text-muted mb-0">Overview of the waste classification predictions.</p>
+    </div>
+    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-eco rounded-pill shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Classification
+        </a>
+    </div>
+</div>
+
+<!-- Key Performance Indicators -->
+<div class="row g-4 mb-5">
+    <!-- Stat 1 -->
+    <div class="col-md-4">
+        <div class="card bg-primary text-white border-0 shadow rounded-4 p-3 h-100 stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase fw-semibold mb-1 opacity-75">Total Predictions</h6>
+                    <h2 class="display-5 fw-bold mb-0">{{ total }}</h2>
+                </div>
+                <div class="fs-1 opacity-50"><i class="fa-solid fa-images"></i></div>
+            </div>
+        </div>
+    </div>
+    <!-- Stat 2 -->
+    <div class="col-md-4">
+        <div class="card bg-success text-white border-0 shadow rounded-4 p-3 h-100 stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase fw-semibold mb-1 opacity-75">Biodegradable</h6>
+                    <h2 class="display-5 fw-bold mb-0">{{ bio_percent }}%</h2>
+                </div>
+                <div class="fs-1 opacity-50"><i class="fa-solid fa-leaf"></i></div>
+            </div>
+        </div>
+    </div>
+    <!-- Stat 3 -->
+    <div class="col-md-4">
+        <div class="card bg-danger text-white border-0 shadow rounded-4 p-3 h-100 stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase fw-semibold mb-1 opacity-75">Non-Biodegradable</h6>
+                    <h2 class="display-5 fw-bold mb-0">{{ non_bio_percent }}%</h2>
+                </div>
+                <div class="fs-1 opacity-50"><i class="fa-solid fa-trash-can"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-4">
+    
+    <!-- Pie Chart Card -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                <h5 class="fw-bold"><i class="fa-solid fa-circle-half-stroke text-eco me-2"></i>Bio vs Non-Bio</h5>
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center p-4">
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bar Chart Card -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                <h5 class="fw-bold"><i class="fa-solid fa-chart-simple text-primary me-2"></i>Classifications by Category</h5>
+            </div>
+            <div class="card-body p-4">
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Line Chart (Trend) Card -->
+    <div class="col-12 mt-4">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                <h5 class="fw-bold"><i class="fa-solid fa-arrow-trend-up text-info me-2"></i>Prediction Trends (Last 7 Days)</h5>
+            </div>
+            <div class="card-body p-4">
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Set common chart options for modern look
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#6c757d';
+    
+    // Pie Chart Data injection
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ pie_labels | tojson }},
+            datasets: [{
+                data: {{ pie_data | tojson }},
+                backgroundColor: ['#198754', '#dc3545'], // Success & Danger bootstrap colors
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { 
+                    padding: 12,
+                    cornerRadius: 8
+                }
+            },
+            cutout: '70%' // Doughnut styling
+        }
+    });
+
+    // Bar Chart Data Injection
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ bar_labels | tojson }},
+            datasets: [{
+                label: 'Prediction Count',
+                data: {{ bar_data | tojson }},
+                backgroundColor: [
+                    'rgba(13, 110, 253, 0.8)',
+                    'rgba(102, 16, 242, 0.8)',
+                    'rgba(111, 66, 193, 0.8)',
+                    'rgba(214, 51, 132, 0.8)',
+                    'rgba(220, 53, 69, 0.8)',
+                    'rgba(253, 126, 20, 0.8)'
+                ],
+                borderRadius: 6,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { borderDash: [4, 4], color: '#e9ecef' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Line Chart Data Injection
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: {{ line_labels | tojson }},
+            datasets: [{
+                label: 'Predictions Over Time',
+                data: {{ line_data | tojson }},
+                borderColor: '#0dcaf0',
+                backgroundColor: 'rgba(13, 202, 240, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#0dcaf0',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { borderDash: [4, 4], color: '#e9ecef' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

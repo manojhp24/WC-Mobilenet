@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-lg-8 text-center mb-5">
+        <h1 class="display-5 fw-bold text-dark mb-3">Smart Waste Classification</h1>
+        <p class="lead text-muted">Upload an image of your waste to instantly classify it into Biodegradable or Non-Biodegradable categories using Deep Learning.</p>
+    </div>
+
+    <div class="col-lg-6 col-md-8 mx-auto">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-5">
+                <form id="uploadForm" action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- Drag & Drop Area -->
+                    <div id="drop-zone" class="drop-zone text-center p-5 rounded-3 mb-4 cursor-pointer">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-cloud-arrow-up text-eco fs-1"></i>
+                        </div>
+                        <h5 class="fw-semibold">Drag & Drop</h5>
+                        <p class="text-muted small">or click to browse your files</p>
+                        <input type="file" name="file" id="file-input" class="d-none" accept="image/jpeg, image/png, image/jpg" required>
+                    </div>
+
+                    <!-- File Preview Details -->
+                    <div id="file-preview" class="d-none mb-4 text-center">
+                        <p class="mb-1 text-success fw-medium"><i class="fa-solid fa-circle-check"></i> <span id="file-name"></span> selected</p>
+                        <div class="preview-img-container mx-auto mt-3">
+                             <img id="img-thumbnail" src="" class="img-fluid rounded shadow-sm d-none" alt="Preview">
+                        </div>
+                    </div>
+
+                    <!-- Submit Area -->
+                    <div class="d-grid mt-4">
+                        <button type="submit" id="predictBtn" class="btn btn-eco btn-lg rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2">
+                            <span>Analyze Image</span>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading State (Hidden by default) -->
+                <div id="loading" class="text-center d-none mt-4">
+                    <div class="spinner-border text-eco mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="text-muted fw-bold">Analyzing with MobileNet...</h5>
+                    <p class="small text-muted">Classifying your waste, please wait.</p>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="row text-center mt-5">
+            <div class="col-4">
+                <div class="h3 text-eco mb-0"><i class="fa-solid fa-recycle"></i></div>
+                <small class="text-muted fw-semibold">Sort Efficiently</small>
+            </div>
+            <div class="col-4 border-start border-end">
+                <div class="h3 text-eco mb-0"><i class="fa-solid fa-brain"></i></div>
+                <small class="text-muted fw-semibold">AI Powered</small>
+            </div>
+            <div class="col-4">
+                <div class="h3 text-eco mb-0"><i class="fa-solid fa-chart-line"></i></div>
+                <small class="text-muted fw-semibold">Real-time Stats</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

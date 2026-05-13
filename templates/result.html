@@ -1,0 +1,132 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center">
+  <!-- Header -->
+  <div class="col-12 text-center mb-4">
+    <h2 class="fw-bold">
+      <i class="fa-solid fa-microscope text-eco me-2"></i>Analysis Result
+    </h2>
+    <p class="text-muted">Here is what the MobileNet model detected.</p>
+  </div>
+
+  <!-- Main Results Card -->
+  <div class="col-lg-10">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+      <div class="row g-0">
+        <!-- Image Section (FIXED) -->
+        <div
+          class="col-md-5 bg-dark d-flex align-items-center justify-content-center p-0 position-relative"
+        >
+          <img
+            src="{{ url_for('static', filename='uploads/' + result.image) }}"
+            class="img-fluid w-100 h-100 object-fit-cover"
+            alt="Uploaded Waste"
+          />
+        </div>
+
+        <!-- Analysis Data Section -->
+        <div class="col-md-7">
+          <div class="card-body p-5">
+            <!-- Class + Type -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div>
+                <h6 class="text-uppercase text-muted fw-bold mb-1">
+                  Predicted Class
+                </h6>
+
+                <h2 class="display-6 fw-bold text-dark text-capitalize mb-0">
+                  {{ result['class'] }} {% if result['class'] == 'paper' %}
+                  <i class="fa-regular fa-newspaper text-secondary"></i>
+                  {% elif result['class'] == 'plastic' %}
+                  <i class="fa-solid fa-bottle-water text-info"></i>
+                  {% elif result['class'] == 'glass' %}
+                  <i class="fa-solid fa-wine-bottle text-success"></i>
+                  {% elif result['class'] == 'metal' %}
+                  <i class="fa-solid fa-can-food text-secondary"></i>
+                  {% elif result['class'] == 'cardboard' %}
+                  <i class="fa-solid fa-box text-warning"></i>
+                  {% elif result['class'] == 'trash' %}
+                  <i class="fa-solid fa-trash text-dark"></i>
+                  {% endif %}
+                </h2>
+              </div>
+
+              <div class="text-end">
+                <span
+                  class="badge {{ 'bg-success' if result['type'] == 'Biodegradable' else 'bg-danger' }} fs-6 rounded-pill px-3 py-2 shadow-sm"
+                >
+                  {{ result['type'] }}
+                </span>
+              </div>
+            </div>
+
+            <hr class="text-muted opacity-25 mb-4" />
+
+            <!-- Confidence + Action -->
+            <div class="row mb-5">
+              <div class="col-sm-6 mb-3 mb-sm-0">
+                <p class="text-muted mb-1 small fw-bold text-uppercase">
+                  Confidence Score
+                </p>
+
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0 fw-bold me-2">{{ result['confidence'] }}%</h3>
+
+                  <div class="progress flex-grow-1" style="height: 8px">
+                    <div
+                      class="progress-bar bg-eco"
+                      style="width: {{ result['confidence'] }}%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <p class="text-muted mb-1 small fw-bold text-uppercase">
+                  Disposal Action
+                </p>
+
+                {% if result['type'] == 'Biodegradable' %}
+                <p class="mb-0 fw-semibold text-success">
+                  <i class="fa-solid fa-check-circle me-1"></i> Compost Bin
+                </p>
+                {% else %}
+                <p class="mb-0 fw-semibold text-danger">
+                  <i class="fa-solid fa-triangle-exclamation me-1"></i> Recycle
+                  / Trash Bin
+                </p>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- BUTTONS (UPDATED) -->
+            <div class="d-flex gap-3 flex-wrap">
+              <a
+                href="{{ url_for('home') }}"
+                class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-medium"
+              >
+                <i class="fa-solid fa-arrow-left me-2"></i> Classify Another
+              </a>
+
+              <!-- NEW BUTTON -->
+              <a
+                href="/report/{{ result['id'] }}"
+                class="btn btn-dark px-4 py-2 rounded-pill fw-medium shadow-sm"
+              >
+                <i class="fa-solid fa-chart-line me-2"></i> Detailed Report
+              </a>
+
+              <a
+                href="{{ url_for('dashboard') }}"
+                class="btn btn-eco px-4 py-2 rounded-pill fw-medium shadow-sm"
+              >
+                View Analytics
+                <i class="fa-solid fa-chevron-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
