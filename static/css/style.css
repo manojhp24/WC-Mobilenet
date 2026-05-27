@@ -95,3 +95,20 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.4rem;
     letter-spacing: -0.03em;
 }
+
+/* Research Analysis Style Extensions */
+.text-justify {
+    text-align: justify;
+}
+.leading-relaxed {
+    line-height: 1.7;
+}
+.shadow-xs {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+.max-h-350 {
+    max-height: 350px;
+    object-fit: contain;
+    width: auto;
+}
+

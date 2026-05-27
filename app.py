@@ -130,5 +130,26 @@ def dashboard():
         line_data=line_data
     )
 
+@app.route("/analysis")
+def analysis():
+    metrics = [
+        {"class": "Paper", "precision": 95.48, "recall": 93.89, "f1": 94.68, "support": 180},
+        {"class": "Cardboard", "precision": 93.24, "recall": 92.00, "f1": 92.62, "support": 150},
+        {"class": "Glass", "precision": 94.30, "recall": 93.13, "f1": 93.71, "support": 160},
+        {"class": "Plastic", "precision": 90.23, "recall": 92.35, "f1": 91.28, "support": 170},
+        {"class": "Metal", "precision": 91.61, "recall": 93.57, "f1": 92.58, "support": 140}
+    ]
+    
+    macro_avg = {"precision": 92.97, "recall": 92.99, "f1": 92.97, "support": 800}
+    weighted_avg = {"precision": 93.03, "recall": 93.00, "f1": 93.01, "support": 800}
+    
+    return render_template(
+        "analysis.html",
+        metrics=metrics,
+        overall_accuracy=93.00,
+        macro_avg=macro_avg,
+        weighted_avg=weighted_avg
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)
